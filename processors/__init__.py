@@ -9,10 +9,12 @@ from .macro_processor import MacroProcessor
 from .etf_processor import ETFProcessor
 from .chips_processor import ChipsProcessor
 from .breadth_processor import BreadthProcessor
+from .ai_processor import summarize_morning_news
 
 __all__ = [
     "MacroProcessor",
     "ETFProcessor",
     "ChipsProcessor",
     "BreadthProcessor",
+    "summarize_morning_news",
 ]

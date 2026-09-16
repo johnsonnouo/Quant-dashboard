@@ -10,6 +10,7 @@ from .tw_market_fetcher import TWMarketFetcher
 from .futures_fetcher import FuturesFetcher
 from .etf_fetcher import ETFFetcher
 from .tdcc_fetcher import TDCCFetcher
+from .news_fetcher import fetch_morning_news
 
 __all__ = [
     "BaseFetcher",
@@ -19,4 +20,5 @@ __all__ = [
     "FuturesFetcher",
     "ETFFetcher",
     "TDCCFetcher",
+    "fetch_morning_news",
 ]

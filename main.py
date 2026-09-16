@@ -16,11 +16,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# 2. 引入視圖層模組
+# 2. 引入視圖層模組、爬蟲與 AI 處理器
 from views.tab_macro import render_tab_macro
 from views.tab_etf_matrix import render_tab_etf_matrix
 from views.tab_chips import render_tab_chips
 from views.tab_market_breadth import render_tab_market_breadth
+from fetchers.news_fetcher import fetch_morning_news
+from processors.ai_processor import summarize_morning_news
 
 
 # 3. 注入自訂暗黑金融美學 CSS
@@ -139,6 +141,33 @@ def main() -> None:
             "4. **大盤市場廣度**：每日淨上漲家數與騰落指標 (AD Line)"
         )
         
+        st.markdown("---")
+        st.markdown("### 🤖 智能投顧 (Gemini 3.6 Flash)")
+        st.caption("即時抓取 CNBC 與 Yahoo 財經晨訊，產出台股開盤作戰計畫")
+
+        if st.button("🚀 產生 AI 盤前速報", use_container_width=True):
+            with st.spinner("📡 正在抓取 CNBC 與 Yahoo 最新財經新聞並交由 AI 分析中，請稍候..."):
+                try:
+                    real_morning_news = fetch_morning_news()
+                    ai_summary = summarize_morning_news(real_morning_news)
+                    st.success("✅ AI 盤前作戰計畫生成成功！")
+                    st.markdown(
+                        f"""<div style="background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 14px; margin-top: 8px; line-height: 1.6;">
+                        {ai_summary}
+                        </div>""",
+                        unsafe_allow_html=True,
+                    )
+                    with st.expander("📰 查看原始抓取新聞清單", expanded=False):
+                        st.text(real_morning_news)
+                except KeyError as e:
+                    st.error(
+                        "⚠️ 尚未配置 GEMINI_API_KEY！\n\n"
+                        "請於專案根目錄建立 `.streamlit/secrets.toml` 並加入：\n"
+                        '```toml\nGEMINI_API_KEY = "AIzaSy..."\n```'
+                    )
+                except Exception as e:
+                    st.error(f"❌ 產生 AI 盤前速報失敗: {str(e)}")
+
         st.markdown("---")
         st.caption("© 2026 台股量化分析工程系統 · Powered by Streamlit & Plotly")
 
